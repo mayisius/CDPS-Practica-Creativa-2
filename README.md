@@ -1,120 +1,100 @@
-# Creative Practice 2 – CDPS
+# Creative Practice 2 – Scalable Application Deployment (CDPS)
 
-This repository contains the implementation of **Creative Practice 2** for the course **CDPS (Concepts and Design of Digital Systems)**.
+This repository contains the implementation of **Creative Practice 2** for the course  
+**CDPS – Concepts and Design of Digital Systems**.
 
-The objective of this practice is to explore and compare different application deployment strategies, evolving from a traditional monolithic deployment to container-based and microservices-oriented architectures, and finally introducing container orchestration.
+The objective of this practice is to design and deploy a **reliable and scalable application** using multiple deployment technologies commonly used in modern **DevOps and cloud environments**.
 
-The practice is based on the **BookInfo** application and focuses on deployment automation, system configuration, and architectural design.
-
----
-
-## Project Overview
-
-The work is structured into four main stages:
-
-1. Deployment of a monolithic application on a virtual machine
-2. Deployment of a monolithic application using Docker
-3. Segmentation of the application into microservices using Docker Compose
-4. Deployment of the microservices-based application using Kubernetes
-
-The emphasis of the practice is placed on understanding the differences between deployment models and their implications in terms of scalability, maintainability, and fault tolerance.
+The work is based on the **BookInfo** application provided by the course and focuses on comparing different deployment strategies, from traditional virtual machines to container orchestration with Kubernetes.
 
 ---
 
-## 1. Deployment on a Virtual Machine
+## Objectives
 
-In the first stage, the application is deployed on a Linux virtual machine hosted on **Google Cloud**.
-
-A **Python 3.9 deployment script** automates the full installation and configuration process, including:
-- Installation of system dependencies
-- Cloning the application repository
-- Creation of a Python virtual environment
-- Installation of required libraries
-- Application startup on a non-default port
-
-The application reads the `TEAM_ID` value from an environment variable, which is injected through a **systemd service**. This allows the application to start automatically on boot and to restart in case of failure.
-
-This deployment serves as a baseline reference for comparison with container-based approaches.
+- Deploy a monolithic application using traditional virtual machines
+- Deploy the same application using Docker (lightweight virtualization)
+- Refactor the application into a microservices architecture using Docker Compose
+- Deploy the microservices-based application using Kubernetes
+- Understand the trade-offs between the different deployment approaches in terms of scalability, reliability, and maintainability
 
 ---
 
-## 2. Monolithic Deployment Using Docker
+## Deployment Stages
 
-In the second stage, the application is deployed as a **monolithic Docker container**.
+### 1. Monolithic Deployment on a Virtual Machine
+The application is deployed as a monolith on a Linux virtual machine hosted on **Google Cloud**.
 
-A Python script automates the entire process:
-- Cloning the repository from GitHub
-- Modifying the application to accept environment variables (`TEAM_ID` and `APP_OWNER`)
-- Automatically generating a `Dockerfile`
-- Building the Docker image
-- Running the container (removing any previous container with the same name if necessary)
-
-The application is exposed through a configurable port and can be accessed once the container is running.
-
-This approach highlights the limitations of monolithic architectures, particularly regarding fault tolerance and scalability.
+A **Python 3.9 script** automates the installation of dependencies, application setup, configuration of environment variables (`TEAM_ID`), and service management using **systemd**, ensuring persistence and automatic restart.
 
 ---
 
-## 3. Microservices Deployment Using Docker Compose
+### 2. Monolithic Deployment Using Docker
+The same monolithic application is deployed using **Docker**, packaging the service into a single container.
 
-In the third stage, the application is restructured following a **microservices architecture** and deployed using **Docker Compose**.
+A Python script automates:
+- Repository cloning
+- Environment variable injection (`TEAM_ID`, `APP_OWNER`)
+- Dockerfile generation
+- Image building and container execution
 
-The system is composed of the following independent services:
-- **Product Page (Python)**: frontend service coordinating requests to the rest of the system
-- **Details (Ruby)**: provides detailed information about the book
-- **Reviews**: manages user reviews and communicates with the ratings service
-- **Ratings (Node.js)**: provides numerical ratings
+This stage demonstrates the benefits of containerization compared to traditional VM-based deployments.
 
-Each microservice runs in its own Docker container. Docker Compose automatically creates an internal virtual network that enables service-to-service communication using service names instead of fixed IP addresses.
+---
 
-### Requirements
-- Docker
-- Docker Compose
+### 3. Microservices Deployment Using Docker Compose
+The application is restructured following a **microservices architecture**, separating functionality into independent services:
 
-### Build
-```bash
-docker-compose -f docker-compose.micro.yml build
+- Product Page (Python)
+- Details (Ruby)
+- Reviews (Java)
+- Ratings (Node.js)
 
-Run
-docker-compose -f docker-compose.micro.yml up
+Each service runs in its own container and is orchestrated using **Docker Compose**, enabling internal communication through a dedicated virtual network.
 
-Access
-http://localhost:9080
+---
 
-Stop
-docker-compose -f docker-compose.micro.yml down
+### 4. Microservices Deployment Using Kubernetes
+The microservices-based application is deployed using **Kubernetes** through **Google Cloud Console**.
 
-This deployment demonstrates the benefits of microservices in terms of modularity, scalability, and maintainability.
+Each microservice is deployed independently and exposed through its corresponding service. External access to the application is provided via a load balancer, completing the transition to a fully orchestrated and scalable deployment.
 
-**## 4. Microservices Deployment Using Kubernetes**
+---
 
-The microservices-based version of the application was successfully deployed using Kubernetes through Google Cloud Console.
+## Repository Structure
 
-The deployment is defined using a set of Kubernetes configuration files, where each microservice is deployed independently and exposed through its corresponding service definition. External access to the application is provided through a load balancer.
+The repository is organized according to the four main stages of the practice:
 
-The Kubernetes configuration includes the following files:
+### Point 1 – Virtual Machine Deployment
+- `pc2_punto1`  
+  Python script for deploying the monolithic application on a virtual machine.
 
-productpage-deployment-g27
+### Point 2 – Docker Monolithic Deployment
+- `deploy_productpage_docker`  
+  Python script that automates the Docker-based deployment of the monolithic application.
 
-productpage-service-g27
+### Point 3 – Docker Compose (Microservices)
+- `docker-compose.micro`
+- `Dockerfile` (one per microservice)
 
-productpage-loadbalancer-g27
+Configuration files for building and orchestrating the microservices architecture using Docker Compose.
 
-details-deployment-g27
+### Point 4 – Kubernetes Deployment
+- `productpage-deployment-g27`
+- `productpage-service-g27`
+- `productpage-loadbalancer-g27`
+- `details-deployment-g27`
+- `details-service-g27`
+- `reviews-deployment-g27`
+- `reviews-service-g27`
+- `ratings-deployment-g27`
+- `ratings-service-g27`
 
-details-service-g27
+Kubernetes configuration files defining the deployments and services required to run the application in a Kubernetes cluster.
 
-reviews-deployment-g27
+---
 
-reviews-service-g27
+## Notes
 
-ratings-deployment-g27
-
-ratings-service-g27
-
-These files describe the deployments and services required to run the BookInfo application in a Kubernetes-managed environment, enabling inter-service communication and external access.
-
-This stage completes the transition from a monolithic architecture to a fully containerized and orchestrated microservices deployment.
-
-**DISCLAIMER:**
-This repository is shared voluntarily for educational and demonstrative purposes
+- This repository is shared voluntarily for educational purposes
+- The original written report is not included to preserve student privacy
+- No personal or sensitive information is contained in this repository
