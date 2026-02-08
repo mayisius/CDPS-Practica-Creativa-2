@@ -1,0 +1,5 @@
+FROM istio/examples-bookinfo-reviews-v1:1.20.2
+
+WORKDIR /opt/microservices
+
+EXPOSE 9080

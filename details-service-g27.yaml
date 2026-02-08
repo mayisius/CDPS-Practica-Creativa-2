@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: details-service
+  namespace: cdps-27
+spec:
+  selector:
+    app: details
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 9095
+  type: ClusterIP

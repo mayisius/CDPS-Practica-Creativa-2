@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: reviews-deployment
+  namespace: cdps-27
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: reviews
+  template:
+    metadata:
+      labels:
+        app: reviews
+    spec:
+      containers:
+      - name: reviews
+        image: cdps-reviews:g27
+        ports:
+        - containerPort: 8080
+        env:
+        - name: TEAM_ID
+          value: "27"
+        - name: APP_OWNER
+          value: "Lopez-et-al"

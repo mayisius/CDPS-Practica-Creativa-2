@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ratings-deployment
+  namespace: cdps-27
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ratings
+  template:
+    metadata:
+      labels:
+        app: ratings
+    spec:
+      containers:
+      - name: ratings
+        image: cdps-ratings:g27
+        ports:
+        - containerPort: 8080
+        env:
+        - name: TEAM_ID
+          value: "27"
+        - name: APP_OWNER
+          value: "Lopez-et-al"

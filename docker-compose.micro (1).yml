@@ -1,0 +1,73 @@
+version: "3.8"
+
+services:
+
+  details:
+    build: ./bookinfo/src/details
+    image: cdps-details:g27
+    container_name: details_cdps_g27
+    command: ["ruby", "details.rb", "7070"]
+    ports:
+      - "9081:7070"
+    networks:
+      - cdps-net
+
+  ratings:
+    build: ./bookinfo/src/ratings
+    image: cdps-ratings:g27
+    container_name: ratings_cdps_g27
+    command: ["node", "ratings.js", "9080"]
+    ports:
+      - "9082:9080"
+    networks:
+      - cdps-net
+
+  reviews:
+    build: ./bookinfo/src/reviews
+    image: cdps-reviews:g27
+    container_name: reviews_v1_cdps_g27
+    environment:
+      SERVICE_VERSION: v1
+      ENABLE_RATINGS: "true"
+      RATINGS_HOSTNAME: ratings
+      RATINGS_PORT: 9080
+    ports:
+      - "9083:9080"
+    networks:
+      - cdps-net
+
+  reviews-v2:
+    image: cdps-reviews:g27
+    container_name: reviews_v2_cdps_g27
+    environment:
+      SERVICE_VERSION: v2
+      ENABLE_RATINGS: "true"
+    networks:
+      - cdps-net
+
+  reviews-v3:
+    image: cdps-reviews:g27
+    container_name: reviews_v3_cdps_g27
+    environment:
+      SERVICE_VERSION: v3
+      ENABLE_RATINGS: "true"
+    networks:
+      - cdps-net
+
+  productpage:
+    build: ./bookinfo/src/productpage
+    image: cdps-productpage:g27
+    container_name: productpage_cdps_g27
+    command: ["python", "productpage.py", "9080", "0.0.0.0"]
+    environment:
+      DETAILS_HOSTNAME: details
+      RATINGS_HOSTNAME: ratings
+      REVIEWS_HOSTNAME: reviews
+    ports:
+      - "9080:9080"
+    networks:
+      - cdps-net
+
+networks:
+  cdps-net:
+    driver: bridge

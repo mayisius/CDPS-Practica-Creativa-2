@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: productpage-deployment
+  namespace: cdps-27
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: productpage
+  template:
+    metadata:
+      labels:
+        app: productpage
+    spec:
+      containers:
+      - name: productpage
+        image: cdps-productpage:g27
+        ports:
+        - containerPort: 8080
+        env:
+        - name: TEAM_ID
+          value: "27"
+        - name: APP_OWNER
+          value: "Lopez-et-al"

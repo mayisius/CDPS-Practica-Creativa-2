@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: details-deployment
+  namespace: cdps-27
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: details
+  template:
+    metadata:
+      labels:
+        app: details
+    spec:
+      containers:
+      - name: details
+        image: cdps-details:g27
+        ports:
+        - containerPort: 8080
+        env:
+        - name: TEAM_ID
+          value: "27"
+        - name: APP_OWNER
+          value: "Lopez-et-al"
